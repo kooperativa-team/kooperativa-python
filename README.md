@@ -4,8 +4,10 @@ Official Python SDK for the [Kooperativa](https://kooperativa.io) API. Enrich an
 
 ## Installation
 
+Install directly from GitHub:
+
 ```bash
-pip install kooperativa
+pip install git+https://github.com/kooperativa-team/kooperativa-python.git
 ```
 
 Requires a Kooperativa API key. Get one from your [account dashboard](https://kooperativa.io/api-keys).
