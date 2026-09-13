@@ -26,6 +26,28 @@ class PersonResource:
             "/person", {"linkedin_url": linkedin_url, "username": username, "id": id}
         )
 
+    def enrich_realtime(
+        self,
+        linkedin_url: Optional[str] = None,
+        username: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Same shape as enrich(), but read from the live source instead of the data lake.
+
+        The record is written back to the lake, so a following enrich() returns
+        this result. Provide exactly one of linkedin_url or username; there is no
+        id parameter, because an internal id means nothing to a source that has
+        never seen our data lake.
+
+        Metered: $0.001 per call on top of the flat license, the only endpoint
+        pair that is. A call is billed whenever the live source answered, so a
+        404 costs the same as a hit, and note that a 404 raises
+        KooperativaApiError, meaning a call that lands in your except block has
+        still been billed. A 503 is never billed.
+        """
+        return self._http.get(
+            "/person/realtime", {"linkedin_url": linkedin_url, "username": username}
+        )
+
     def check(
         self,
         linkedin_url: Optional[str] = None,
@@ -92,6 +114,28 @@ class CompanyResource:
         return self._http.get(
             "/company",
             {"linkedin_url": linkedin_url, "username": username, "company_id": company_id, "id": id},
+        )
+
+    def enrich_realtime(
+        self,
+        linkedin_url: Optional[str] = None,
+        username: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Same shape as enrich(), but read from the live source instead of the data lake.
+
+        The record is written back to the lake, so a following enrich() returns
+        this result. Provide exactly one of linkedin_url or username; neither
+        company_id nor id is accepted, because an internal id means nothing to a
+        source that has never seen our data lake.
+
+        Metered: $0.001 per call on top of the flat license, the only endpoint
+        pair that is. A call is billed whenever the live source answered, so a
+        404 costs the same as a hit, and note that a 404 raises
+        KooperativaApiError, meaning a call that lands in your except block has
+        still been billed. A 503 is never billed.
+        """
+        return self._http.get(
+            "/company/realtime", {"linkedin_url": linkedin_url, "username": username}
         )
 
     def check(
